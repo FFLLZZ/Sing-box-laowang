@@ -166,7 +166,7 @@ cat << EOF
 EOF
 rm -rf config.yaml fake_useragent_0.2.0.json
 echo -e "\n\e[1;32mRuning done!\033[0m"
-#echo -e "\e[1;35m脚本地址：https://github.com/eooce/scripts\e[0m"
+echo -e "\e[1;35m脚本地址：https://github.com/eooce/scripts\e[0m"
 #echo -e "\e[1;35m反馈论坛：https://bbs.vps8.me\e[0m"
 #echo -e "\e[1;35mTG反馈群组：https://t.me/vps888\e[0m"
 #echo -e "\e[1;35m转载请著名出处，请勿滥用\e[0m\n"
