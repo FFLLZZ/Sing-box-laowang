@@ -1,14 +1,10 @@
 #!/bin/bash
 export LC_ALL=C
 export UUID=${UUID:-'d9079774-1cdb-4687-9b79-46ef2a433b61'} 
-export NEZHA_SERVER=${NEZHA_SERVER:-''}      
-export NEZHA_PORT=${NEZHA_PORT:-'5555'}             
-export NEZHA_KEY=${NEZHA_KEY:-''}                
-export PORT=${PORT:-'60000'} 
 USERNAME=$(whoami)
 HOSTNAME=$(hostname)
 
-[[ "$HOSTNAME" == "s1.ct8.pl" ]] && WORKDIR="domains/${USERNAME}.ct8.pl/logs" || WORKDIR="domains/${USERNAME}.serv00.net/logs"
+WORKDIR="domains/${USERNAME}.serv00.net/logs"
 [ -d "$WORKDIR" ] || (mkdir -p "$WORKDIR" && chmod 777 "$WORKDIR" && cd "$WORKDIR")
 ps aux | grep $(whoami) | grep -v "sshd\|bash\|grep" | awk '{print $2}' | xargs -r kill -9 > /dev/null 2>&1
 
@@ -83,9 +79,9 @@ get_ip() {
   echo "$ip"
 }
 if [[ "$(get_ip)" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    HOST_IP=$(get_ip)
+    HOST_IP=85.194.243.117
 else
-    HOST_IP=$(host "$(get_ip)" | grep "has address" | awk '{print $4}')
+    HOST_IP=85.194.243.117
 fi
 
 # Generate configuration file
@@ -114,23 +110,6 @@ transport:
 EOF
 
 run() {
-  if [ -e "$(basename ${FILE_MAP[npm]})" ]; then
-    tlsPorts=("443" "8443" "2096" "2087" "2083" "2053")
-    if [[ "${tlsPorts[*]}" =~ "${NEZHA_PORT}" ]]; then
-      NEZHA_TLS="--tls"
-    else
-      NEZHA_TLS=""
-    fi
-    if [ -n "$NEZHA_SERVER" ] && [ -n "$NEZHA_PORT" ] && [ -n "$NEZHA_KEY" ]; then
-      export TMPDIR=$(pwd)
-      nohup ./"$(basename ${FILE_MAP[npm]})" -s ${NEZHA_SERVER}:${NEZHA_PORT} -p ${NEZHA_KEY} ${NEZHA_TLS} >/dev/null 2>&1 &
-      sleep 1
-      pgrep -x "$(basename ${FILE_MAP[npm]})" > /dev/null && echo -e "\e[1;32m$(basename ${FILE_MAP[npm]}) is running\e[0m" || { echo -e "\e[1;35m$(basename ${FILE_MAP[npm]}) is not running, restarting...\e[0m"; pkill -f "$(basename ${FILE_MAP[npm]})" && nohup ./"$(basename ${FILE_MAP[npm]})" -s ${NEZHA_SERVER}:${NEZHA_PORT} -p ${NEZHA_KEY} ${NEZHA_TLS} >/dev/null 2>&1 & sleep 2; echo -e "\e[1;32m"$(basename ${FILE_MAP[npm]})" restarted\e[0m"; }
-    else
-      echo -e "\e[1;35mNEZHA variable is empty, skipping running\e[0m"
-    fi
-  fi
-
   if [ -e "$(basename ${FILE_MAP[web]})" ]; then
     nohup ./"$(basename ${FILE_MAP[web]})" server config.yaml >/dev/null 2>&1 &
     sleep 1
@@ -167,7 +146,4 @@ EOF
 rm -rf config.yaml fake_useragent_0.2.0.json
 echo -e "\n\e[1;32mRuning done!\033[0m"
 #echo -e "\e[1;35m脚本地址：https://github.com/eooce/scripts\e[0m"
-#echo -e "\e[1;35m反馈论坛：https://bbs.vps8.me\e[0m"
-#echo -e "\e[1;35mTG反馈群组：https://t.me/vps888\e[0m"
-#echo -e "\e[1;35m转载请著名出处，请勿滥用\e[0m\n"
 exit 0
